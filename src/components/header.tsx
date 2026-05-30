@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
+import { useOrder } from "@/contexts/order-context"
 
 const navLinks = [
   { href: "#inicio", label: "Início" },
@@ -16,6 +17,7 @@ const navLinks = [
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { openOrderForm } = useOrder()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,14 +64,12 @@ export function Header() {
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center gap-4">
-            <a
-              href="https://wa.me/5548936224040"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={openOrderForm}
               className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-bold hover:bg-primary/90 transition-all hover:scale-105 shadow-md"
             >
               Fazer Pedido
-            </a>
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -96,14 +96,15 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
-              <a
-                href="https://wa.me/5548936224040"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => {
+                  openOrderForm()
+                  setIsMenuOpen(false)
+                }}
                 className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-center mt-4 hover:bg-primary/90 transition-all shadow-md"
               >
                 Fazer Pedido
-              </a>
+              </button>
             </div>
           </nav>
         )}
