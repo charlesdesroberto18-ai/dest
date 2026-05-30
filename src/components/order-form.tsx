@@ -23,6 +23,7 @@ const menuItems: Record<string, Array<{name: string, description: string, price:
     { name: "Lula à Milanesa M", description: "500g de lula empanada", price: 50, priceFormatted: "R$ 50,00" },
     { name: "Lula à Milanesa G", description: "1kg de lula empanada", price: 80, priceFormatted: "R$ 80,00" },
     { name: "Tábua Floripa", description: "Camarão, tilápia, lula à milanesa, marisco e fritas", price: 145, priceFormatted: "R$ 145,00" },
+    { name: "Tábua de Carne", description: "Picanha, fraldinha, linguiça, coração, queijo coalho e fritas", price: 145, priceFormatted: "R$ 145,00" },
     { name: "Casquinha de Siri", description: "Unidade", price: 8, priceFormatted: "R$ 8,00" },
     { name: "Bolinho de Siri", description: "Porção com 8 unidades", price: 30, priceFormatted: "R$ 30,00" },
     { name: "Camarão à Parmegiana", description: "Com arroz e fritas", price: 100, priceFormatted: "R$ 100,00" },
@@ -200,26 +201,28 @@ Pedido enviado pelo site`
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
       <div 
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
       />
       
       {/* Modal */}
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-secondary rounded-2xl shadow-2xl overflow-hidden mx-4">
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-card rounded-2xl shadow-2xl overflow-hidden mx-4 border border-border/50">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border/30 bg-secondary">
+        <div className="flex items-center justify-between p-4 border-b border-border/40 bg-card">
           <div className="flex items-center gap-3">
-            <ShoppingCart className="w-6 h-6 text-primary" />
+            <div className="p-2 bg-primary/20 rounded-xl">
+              <ShoppingCart className="w-5 h-5 text-primary" />
+            </div>
             <h2 className="text-xl font-bold text-foreground">Fazer Pedido</h2>
           </div>
           <div className="flex items-center gap-4">
             {cartCount > 0 && (
               <button
                 onClick={() => setStep(step === "menu" ? "cart" : "menu")}
-                className="flex items-center gap-2 px-4 py-2 bg-primary/20 rounded-full text-primary font-medium hover:bg-primary/30 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-colors shadow-md"
               >
-                <ShoppingCart className="w-5 h-5" />
-                <span>{cartCount} {cartCount === 1 ? "item" : "itens"}</span>
+                <ShoppingCart className="w-4 h-4" />
+                <span>{cartCount}</span>
                 <span className="font-bold">{formatCurrency(total)}</span>
               </button>
             )}
@@ -227,25 +230,25 @@ Pedido enviado pelo site`
               onClick={onClose}
               className="p-2 hover:bg-foreground/10 rounded-full transition-colors"
             >
-              <X className="w-6 h-6 text-foreground" />
+              <X className="w-6 h-6 text-foreground/70" />
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-140px)]">
+        <div className="overflow-y-auto max-h-[calc(90vh-140px)] bg-background/50">
           {step === "menu" && (
-            <div className="p-4">
+            <div className="p-5">
               {/* Category Tabs */}
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-border/30">
                 {categories.map((category) => (
                   <button
                     key={category.id}
                     onClick={() => setActiveCategory(category.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all text-sm ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all text-sm ${
                       activeCategory === category.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-foreground/10 text-foreground/70 hover:bg-foreground/20"
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-card text-foreground/70 hover:bg-card/80 hover:text-foreground border border-border/30"
                     }`}
                   >
                     <category.icon size={18} />
@@ -261,38 +264,38 @@ Pedido enviado pelo site`
                   return (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 bg-foreground/5 rounded-xl border border-border/30 hover:border-primary/30 transition-all"
+                      className="flex items-center justify-between p-4 bg-card rounded-xl border border-border/40 hover:border-primary/40 hover:shadow-md transition-all"
                     >
                       <div className="flex-1 mr-4">
                         <h3 className="font-bold text-foreground text-sm">{item.name}</h3>
-                        <p className="text-foreground/60 text-xs mt-0.5">{item.description}</p>
-                        <span className="text-primary font-bold text-sm mt-1 inline-block">
+                        <p className="text-foreground/50 text-xs mt-1">{item.description}</p>
+                        <span className="text-primary font-bold text-base mt-2 inline-block">
                           {item.priceFormatted}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         {cartItem ? (
-                          <div className="flex items-center gap-2 bg-primary/20 rounded-full px-2 py-1">
+                          <div className="flex items-center gap-2 bg-primary rounded-xl px-3 py-2">
                             <button
                               onClick={() => updateQuantity(item.name, -1)}
-                              className="p-1 hover:bg-primary/30 rounded-full transition-colors"
+                              className="p-1 hover:bg-primary-foreground/20 rounded-lg transition-colors"
                             >
-                              <Minus className="w-4 h-4 text-primary" />
+                              <Minus className="w-4 h-4 text-primary-foreground" />
                             </button>
-                            <span className="text-foreground font-bold w-6 text-center">
+                            <span className="text-primary-foreground font-bold w-6 text-center">
                               {cartItem.quantity}
                             </span>
                             <button
                               onClick={() => updateQuantity(item.name, 1)}
-                              className="p-1 hover:bg-primary/30 rounded-full transition-colors"
+                              className="p-1 hover:bg-primary-foreground/20 rounded-lg transition-colors"
                             >
-                              <Plus className="w-4 h-4 text-primary" />
+                              <Plus className="w-4 h-4 text-primary-foreground" />
                             </button>
                           </div>
                         ) : (
                           <button
                             onClick={() => addToCart({ name: item.name, price: item.price })}
-                            className="flex items-center gap-1 px-3 py-2 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-colors text-sm"
+                            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors text-sm shadow-sm"
                           >
                             <Plus className="w-4 h-4" />
                             Adicionar
@@ -307,19 +310,23 @@ Pedido enviado pelo site`
           )}
 
           {step === "cart" && (
-            <div className="p-4">
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5 text-primary" />
+            <div className="p-5">
+              <h3 className="text-lg font-bold text-foreground mb-5 flex items-center gap-3">
+                <div className="p-2 bg-primary/20 rounded-xl">
+                  <ShoppingCart className="w-5 h-5 text-primary" />
+                </div>
                 Seu Carrinho
               </h3>
               
               {cart.length === 0 ? (
-                <div className="text-center py-12">
-                  <ShoppingCart className="w-16 h-16 text-foreground/30 mx-auto mb-4" />
-                  <p className="text-foreground/60">Seu carrinho está vazio</p>
+                <div className="text-center py-16">
+                  <div className="p-4 bg-card rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                    <ShoppingCart className="w-10 h-10 text-foreground/30" />
+                  </div>
+                  <p className="text-foreground/50 mb-4">Seu carrinho está vazio</p>
                   <button
                     onClick={() => setStep("menu")}
-                    className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-colors"
+                    className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors shadow-md"
                   >
                     Ver Cardápio
                   </button>
@@ -329,35 +336,35 @@ Pedido enviado pelo site`
                   {cart.map((item) => (
                     <div
                       key={item.name}
-                      className="flex items-center justify-between p-4 bg-foreground/5 rounded-xl border border-border/30"
+                      className="flex items-center justify-between p-4 bg-card rounded-xl border border-border/40"
                     >
                       <div className="flex-1">
                         <h4 className="font-bold text-foreground text-sm">{item.name}</h4>
-                        <p className="text-primary font-bold text-sm">
+                        <p className="text-primary font-bold text-base mt-1">
                           {formatCurrency(item.price * item.quantity)}
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 bg-primary/20 rounded-full px-2 py-1">
+                        <div className="flex items-center gap-2 bg-primary rounded-xl px-3 py-2">
                           <button
                             onClick={() => updateQuantity(item.name, -1)}
-                            className="p-1 hover:bg-primary/30 rounded-full transition-colors"
+                            className="p-1 hover:bg-primary-foreground/20 rounded-lg transition-colors"
                           >
-                            <Minus className="w-4 h-4 text-primary" />
+                            <Minus className="w-4 h-4 text-primary-foreground" />
                           </button>
-                          <span className="text-foreground font-bold w-6 text-center">
+                          <span className="text-primary-foreground font-bold w-6 text-center">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.name, 1)}
-                            className="p-1 hover:bg-primary/30 rounded-full transition-colors"
+                            className="p-1 hover:bg-primary-foreground/20 rounded-lg transition-colors"
                           >
-                            <Plus className="w-4 h-4 text-primary" />
+                            <Plus className="w-4 h-4 text-primary-foreground" />
                           </button>
                         </div>
                         <button
                           onClick={() => removeFromCart(item.name)}
-                          className="p-2 text-red-400 hover:bg-red-400/20 rounded-full transition-colors"
+                          className="p-2.5 text-destructive bg-destructive/10 hover:bg-destructive/20 rounded-xl transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -366,13 +373,13 @@ Pedido enviado pelo site`
                   ))}
 
                   {/* Sugestão de Bebidas */}
-                  <div className="bg-primary/10 rounded-xl p-4 border border-primary/30 mt-4">
-                    <div className="flex items-center gap-2 mb-2">
+                  <div className="bg-primary/10 rounded-xl p-5 border border-primary/20 mt-5">
+                    <div className="flex items-center gap-2 mb-3">
                       <GlassWater className="w-5 h-5 text-primary" />
-                      <span className="font-bold text-foreground text-sm">Não esqueça das bebidas!</span>
+                      <span className="font-bold text-foreground">Adicione bebidas ao pedido</span>
                     </div>
-                    <p className="text-foreground/70 text-xs mb-3">
-                      Adicione refrigerantes, sucos, cervejas ou drinks ao seu pedido.
+                    <p className="text-foreground/60 text-sm mb-4">
+                      Refrigerantes, sucos, cervejas ou drinks para acompanhar.
                     </p>
                     <div className="flex gap-2 flex-wrap">
                       <button
@@ -380,9 +387,9 @@ Pedido enviado pelo site`
                           setActiveCategory("bebidas")
                           setStep("menu")
                         }}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-primary/20 text-primary rounded-full text-xs font-medium hover:bg-primary/30 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-card text-foreground rounded-xl text-sm font-medium hover:bg-card/80 transition-colors border border-border/30"
                       >
-                        <GlassWater className="w-3 h-3" />
+                        <GlassWater className="w-4 h-4 text-primary" />
                         Refrigerantes
                       </button>
                       <button
@@ -390,9 +397,9 @@ Pedido enviado pelo site`
                           setActiveCategory("cervejas")
                           setStep("menu")
                         }}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-primary/20 text-primary rounded-full text-xs font-medium hover:bg-primary/30 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-card text-foreground rounded-xl text-sm font-medium hover:bg-card/80 transition-colors border border-border/30"
                       >
-                        <Beer className="w-3 h-3" />
+                        <Beer className="w-4 h-4 text-primary" />
                         Cervejas
                       </button>
                       <button
@@ -400,32 +407,32 @@ Pedido enviado pelo site`
                           setActiveCategory("drinks")
                           setStep("menu")
                         }}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-primary/20 text-primary rounded-full text-xs font-medium hover:bg-primary/30 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-card text-foreground rounded-xl text-sm font-medium hover:bg-card/80 transition-colors border border-border/30"
                       >
-                        <Wine className="w-3 h-3" />
+                        <Wine className="w-4 h-4 text-primary" />
                         Drinks
                       </button>
                     </div>
                   </div>
 
-                  <div className="border-t border-border/30 pt-4 mt-4">
-                    <div className="flex items-center justify-between text-lg font-bold">
+                  <div className="border-t border-border/30 pt-5 mt-5">
+                    <div className="flex items-center justify-between text-xl font-bold">
                       <span className="text-foreground">Total:</span>
                       <span className="text-primary">{formatCurrency(total)}</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3 mt-4">
+                  <div className="flex flex-col gap-3 mt-5">
                     <button
                       onClick={() => setStep("menu")}
-                      className="w-full py-3 border-2 border-primary/50 text-primary rounded-xl font-bold hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
+                      className="w-full py-3.5 border-2 border-border/50 text-foreground rounded-xl font-semibold hover:bg-card transition-colors flex items-center justify-center gap-2"
                     >
                       <Plus className="w-5 h-5" />
                       Continuar Comprando
                     </button>
                     <button
                       onClick={() => setStep("checkout")}
-                      className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                      className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-md"
                     >
                       Finalizar Pedido
                     </button>

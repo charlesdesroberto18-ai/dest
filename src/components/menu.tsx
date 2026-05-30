@@ -23,6 +23,7 @@ const menuItems: Record<string, Array<{name: string, description: string, price:
     { name: "Lula à Milanesa M", description: "500g de lula empanada", price: "R$ 50,00" },
     { name: "Lula à Milanesa G", description: "1kg de lula empanada", price: "R$ 80,00" },
     { name: "Tábua Floripa", description: "Camarão, tilápia, lula à milanesa, marisco e fritas", price: "R$ 145,00" },
+    { name: "Tábua de Carne", description: "Picanha, fraldinha, linguiça, coração, queijo coalho e fritas", price: "R$ 145,00" },
     { name: "Casquinha de Siri", description: "Unidade", price: "R$ 8,00" },
     { name: "Bolinho de Siri", description: "Porção com 8 unidades", price: "R$ 30,00" },
     { name: "Camarão à Parmegiana", description: "Com arroz e fritas", price: "R$ 100,00" },
