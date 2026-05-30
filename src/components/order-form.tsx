@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { X, Plus, Minus, ShoppingCart, Trash2, User, CreditCard, Send, Fish, Utensils, Sandwich, Wine, Beer } from "lucide-react"
+import { X, Plus, Minus, ShoppingCart, Trash2, User, CreditCard, Send, Fish, Utensils, Sandwich, Wine, Beer, Coffee, GlassWater, ArrowLeft } from "lucide-react"
 
 const categories = [
   { id: "frutos", label: "Frutos do Mar", icon: Fish },
@@ -9,6 +9,7 @@ const categories = [
   { id: "lanches", label: "Lanches", icon: Sandwich },
   { id: "drinks", label: "Drinks", icon: Wine },
   { id: "cervejas", label: "Cervejas", icon: Beer },
+  { id: "bebidas", label: "Bebidas", icon: GlassWater },
 ]
 
 const menuItems: Record<string, Array<{name: string, description: string, price: number, priceFormatted: string}>> = {
@@ -74,6 +75,27 @@ const menuItems: Record<string, Array<{name: string, description: string, price:
     { name: "Therezópolis 600ml", description: "Cerveja premium", price: 11, priceFormatted: "R$ 11,00" },
     { name: "Amstel", description: "Cerveja puro malte", price: 10, priceFormatted: "R$ 10,00" },
   ],
+  bebidas: [
+    { name: "Coca-Cola Lata", description: "350ml", price: 6, priceFormatted: "R$ 6,00" },
+    { name: "Coca-Cola 600ml", description: "Garrafa", price: 8, priceFormatted: "R$ 8,00" },
+    { name: "Coca-Cola 2L", description: "Garrafa", price: 14, priceFormatted: "R$ 14,00" },
+    { name: "Guaraná Antarctica Lata", description: "350ml", price: 5, priceFormatted: "R$ 5,00" },
+    { name: "Guaraná Antarctica 2L", description: "Garrafa", price: 12, priceFormatted: "R$ 12,00" },
+    { name: "Fanta Laranja Lata", description: "350ml", price: 5, priceFormatted: "R$ 5,00" },
+    { name: "Sprite Lata", description: "350ml", price: 5, priceFormatted: "R$ 5,00" },
+    { name: "Água Mineral", description: "500ml", price: 4, priceFormatted: "R$ 4,00" },
+    { name: "Água com Gás", description: "500ml", price: 5, priceFormatted: "R$ 5,00" },
+    { name: "Suco Natural de Laranja", description: "300ml", price: 10, priceFormatted: "R$ 10,00" },
+    { name: "Suco Natural de Limão", description: "300ml", price: 8, priceFormatted: "R$ 8,00" },
+    { name: "Suco Natural de Maracujá", description: "300ml", price: 10, priceFormatted: "R$ 10,00" },
+    { name: "Suco Natural de Abacaxi", description: "300ml", price: 10, priceFormatted: "R$ 10,00" },
+    { name: "Energético Red Bull", description: "250ml", price: 15, priceFormatted: "R$ 15,00" },
+    { name: "Energético Monster", description: "473ml", price: 14, priceFormatted: "R$ 14,00" },
+    { name: "Café Expresso", description: "Xícara", price: 5, priceFormatted: "R$ 5,00" },
+    { name: "Café com Leite", description: "Xícara", price: 6, priceFormatted: "R$ 6,00" },
+    { name: "Cappuccino", description: "Xícara", price: 8, priceFormatted: "R$ 8,00" },
+    { name: "Chá Gelado", description: "300ml", price: 6, priceFormatted: "R$ 6,00" },
+  ],
 }
 
 type CartItem = {
@@ -94,6 +116,8 @@ export function OrderForm({ isOpen, onClose }: OrderFormProps) {
   const [customerName, setCustomerName] = useState("")
   const [customerPhone, setCustomerPhone] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("")
+  const [deliveryMethod, setDeliveryMethod] = useState("")
+  const [customerAddress, setCustomerAddress] = useState("")
   const [observations, setObservations] = useState("")
 
   const addToCart = (item: { name: string; price: number }) => {
@@ -130,7 +154,7 @@ export function OrderForm({ isOpen, onClose }: OrderFormProps) {
   }
 
   const sendToWhatsApp = () => {
-    if (!customerName || !paymentMethod || cart.length === 0) return
+    if (!customerName || !paymentMethod || !deliveryMethod || cart.length === 0) return
 
     const itemsList = cart
       .map((item) => `- ${item.quantity}x ${item.name} (${formatCurrency(item.price * item.quantity)})`)
@@ -140,6 +164,9 @@ export function OrderForm({ isOpen, onClose }: OrderFormProps) {
 
 *Cliente:* ${customerName}
 ${customerPhone ? `*Telefone:* ${customerPhone}` : ""}
+
+*Tipo:* ${deliveryMethod === "retirada" ? "Retirada no Local" : "Entrega"}
+${deliveryMethod === "entrega" && customerAddress ? `*Endereço:* ${customerAddress}` : ""}
 
 *Itens do Pedido:*
 ${itemsList}
@@ -160,6 +187,8 @@ Pedido enviado pelo site`
     setCustomerName("")
     setCustomerPhone("")
     setPaymentMethod("")
+    setDeliveryMethod("")
+    setCustomerAddress("")
     setObservations("")
     setStep("menu")
     onClose()
@@ -336,6 +365,49 @@ Pedido enviado pelo site`
                     </div>
                   ))}
 
+                  {/* Sugestão de Bebidas */}
+                  <div className="bg-primary/10 rounded-xl p-4 border border-primary/30 mt-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <GlassWater className="w-5 h-5 text-primary" />
+                      <span className="font-bold text-foreground text-sm">Não esqueça das bebidas!</span>
+                    </div>
+                    <p className="text-foreground/70 text-xs mb-3">
+                      Adicione refrigerantes, sucos, cervejas ou drinks ao seu pedido.
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      <button
+                        onClick={() => {
+                          setActiveCategory("bebidas")
+                          setStep("menu")
+                        }}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-primary/20 text-primary rounded-full text-xs font-medium hover:bg-primary/30 transition-colors"
+                      >
+                        <GlassWater className="w-3 h-3" />
+                        Refrigerantes
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveCategory("cervejas")
+                          setStep("menu")
+                        }}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-primary/20 text-primary rounded-full text-xs font-medium hover:bg-primary/30 transition-colors"
+                      >
+                        <Beer className="w-3 h-3" />
+                        Cervejas
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActiveCategory("drinks")
+                          setStep("menu")
+                        }}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-primary/20 text-primary rounded-full text-xs font-medium hover:bg-primary/30 transition-colors"
+                      >
+                        <Wine className="w-3 h-3" />
+                        Drinks
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="border-t border-border/30 pt-4 mt-4">
                     <div className="flex items-center justify-between text-lg font-bold">
                       <span className="text-foreground">Total:</span>
@@ -343,12 +415,21 @@ Pedido enviado pelo site`
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => setStep("checkout")}
-                    className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
-                  >
-                    Continuar para Finalizar
-                  </button>
+                  <div className="flex flex-col gap-3 mt-4">
+                    <button
+                      onClick={() => setStep("menu")}
+                      className="w-full py-3 border-2 border-primary/50 text-primary rounded-xl font-bold hover:bg-primary/10 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-5 h-5" />
+                      Continuar Comprando
+                    </button>
+                    <button
+                      onClick={() => setStep("checkout")}
+                      className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                    >
+                      Finalizar Pedido
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -356,10 +437,18 @@ Pedido enviado pelo site`
 
           {step === "checkout" && (
             <div className="p-4">
-              <h3 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
-                Dados do Pedido
-              </h3>
+              <div className="flex items-center gap-3 mb-6">
+                <button
+                  onClick={() => setStep("cart")}
+                  className="p-2 hover:bg-foreground/10 rounded-full transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5 text-foreground" />
+                </button>
+                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <User className="w-5 h-5 text-primary" />
+                  Dados do Pedido
+                </h3>
+              </div>
 
               <div className="space-y-4">
                 {/* Customer Name */}
@@ -389,6 +478,53 @@ Pedido enviado pelo site`
                     className="w-full px-4 py-3 bg-foreground/10 border border-border/30 rounded-xl text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
+
+                {/* Delivery Method */}
+                <div>
+                  <label className="block text-foreground font-medium mb-3 text-sm">
+                    Tipo de Pedido *
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setDeliveryMethod("retirada")}
+                      className={`p-4 rounded-xl font-medium transition-all text-sm flex flex-col items-center gap-2 ${
+                        deliveryMethod === "retirada"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-foreground/10 text-foreground/70 hover:bg-foreground/20 border border-border/30"
+                      }`}
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      Retirada no Local
+                    </button>
+                    <button
+                      onClick={() => setDeliveryMethod("entrega")}
+                      className={`p-4 rounded-xl font-medium transition-all text-sm flex flex-col items-center gap-2 ${
+                        deliveryMethod === "entrega"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-foreground/10 text-foreground/70 hover:bg-foreground/20 border border-border/30"
+                      }`}
+                    >
+                      <Send className="w-5 h-5" />
+                      Entrega
+                    </button>
+                  </div>
+                </div>
+
+                {/* Address - only if delivery */}
+                {deliveryMethod === "entrega" && (
+                  <div>
+                    <label className="block text-foreground font-medium mb-2 text-sm">
+                      Endereço de Entrega *
+                    </label>
+                    <textarea
+                      value={customerAddress}
+                      onChange={(e) => setCustomerAddress(e.target.value)}
+                      placeholder="Rua, número, bairro, complemento..."
+                      rows={2}
+                      className="w-full px-4 py-3 bg-foreground/10 border border-border/30 rounded-xl text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-primary transition-colors resize-none"
+                    />
+                  </div>
+                )}
 
                 {/* Payment Method */}
                 <div>
@@ -447,7 +583,7 @@ Pedido enviado pelo site`
                 {/* Send Button */}
                 <button
                   onClick={sendToWhatsApp}
-                  disabled={!customerName || !paymentMethod || cart.length === 0}
+                  disabled={!customerName || !paymentMethod || !deliveryMethod || cart.length === 0 || (deliveryMethod === "entrega" && !customerAddress)}
                   className="w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
